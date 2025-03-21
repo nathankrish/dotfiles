@@ -60,11 +60,13 @@ alias aft="ruby ./functest/bin/test_main.rb --bindir=./build --testdatadir=./fun
 export CEM_BUILD_CACHE_PATH=/var/opt/devfiles/$USER/.build-cache
 export CMAKE_EXPORT_COMPILE_COMMANDS=1
 export PATH="$PATH:/opt/homebrew/bin/"
+export PATH="$PATH:/Users/knathan1/.local/share/java/jdtls/bin/"
 export EDITOR="/opt/homebrew/nvim"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 
 # export HTTP_PROXY=http://proxy:8080
 # export HTTPS_PROXY=http://proxy:8080
