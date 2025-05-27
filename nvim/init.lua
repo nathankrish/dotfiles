@@ -27,9 +27,9 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.schedule(function()
---   vim.opt.clipboard = 'unnamedplus'
--- end)
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+end)
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -374,7 +374,15 @@ require('lazy').setup({
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       { 'williamboman/mason.nvim', opts = {} },
-      'williamboman/mason-lspconfig.nvim',
+      {
+        'williamboman/mason-lspconfig.nvim',
+        lazy = true,
+        dependencies = { 'neovim/nvim-lspconfig' },
+        config = function()
+          require('mason').setup {}
+          require('mason-lspconfig').setup {}
+        end,
+      },
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -538,7 +546,7 @@ require('lazy').setup({
             '--clang-tidy',
             '--completion-style=bundled',
             '--cross-file-rename',
-            '--header-insertion=iwyu',
+            '--header-insertion=never',
             '--offset-encoding=utf-16',
           },
         },
@@ -587,65 +595,52 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      }
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed } 
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, java = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-    },
-  },
+  -- { -- Autoformat
+  --   'stevearc/conform.nvim',
+  --   event = { 'BufWritePre' },
+  --   cmd = { 'ConformInfo' },
+  --   keys = {
+  --     {
+  --       '<leader>f',
+  --       function()
+  --         require('conform').format { async = true, lsp_format = 'fallback' }
+  --       end,
+  --       mode = '',
+  --       desc = '[F]ormat buffer',
+  --     },
+  --   },
+  --   opts = {
+  --     notify_on_error = false,
+  --     format_on_save = function(bufnr)
+  --       -- Disable "format_on_save lsp_fallback" for languages that don't
+  --       -- have a well standardized coding style. You can add additional
+  --       -- languages here or re-enable it for the disabled ones.
+  --       local disable_filetypes = { c = true, cpp = true }
+  --       local lsp_format_opt
+  --       if disable_filetypes[vim.bo[bufnr].filetype] then
+  --         lsp_format_opt = 'never'
+  --       else
+  --         lsp_format_opt = 'fallback'
+  --       end
+  --       return {
+  --         timeout_ms = 500,
+  --         lsp_format = lsp_format_opt,
+  --       }
+  --     end,
+  --     formatters_by_ft = {
+  --       lua = { 'stylua' },
+  --       -- Conform can also run multiple formatters sequentially
+  --       -- python = { "isort", "black" },
+  --       --
+  --       -- You can use 'stop_after_first' to run the first available formatter from the list
+  --       -- javascript = { "prettierd", "prettier", stop_after_first = true },
+  --     },
+  --   },
+  -- },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -803,22 +798,6 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -873,6 +852,9 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
+  git = {
+    cmd = "/home/knathan1/bin/git",
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
@@ -900,4 +882,97 @@ vim.keymap.set('v', '<leader>/', 'gc', { desc = 'toggle comment', remap = true }
 -- vim: ts=2 sts=2 sw=2 et
 --
 vim.opt.diffopt = 'vertical'
-vim.o.shell = '/opt/homebrew/bin/bash'
+vim.keymap.set('n', '<C-k>', function()
+  vim.cmd.wincmd 'k'
+end)
+vim.keymap.set('n', '<C-j>', function()
+  vim.cmd.wincmd 'j'
+end)
+vim.keymap.set('n', '<C-h>', function()
+  vim.cmd.wincmd 'h'
+end)
+vim.keymap.set('n', '<C-l>', function()
+  vim.cmd.wincmd 'l'
+end)
+
+vim.keymap.set('n', '<leader>nt', function()
+  vim.cmd([[
+    tabnew
+  ]])
+  vim.cmd([[
+    term 
+  ]])
+  vim.cmd([[
+    set nonu
+  ]])
+end,
+{ desc = 'Create a terminal window'}
+)
+
+vim.keymap.set('n', '<leader>nw', function()
+  vim.cmd([[
+    tabclose
+  ]])
+end,
+{ desc = 'Close the current tab'}
+)
+
+
+
+vim.keymap.set('n', '<leader>no', function()
+  vim.cmd([[
+    tabnew
+  ]]) 
+end,
+{ desc = 'Create a new tab'}
+)
+
+vim.keymap.set('n', 'gj', function()
+  vim.cmd([[
+    tabprevious
+  ]]) 
+end,
+{ desc = 'Go to next tab'}
+)
+
+vim.keymap.set('n', 'gk', function()
+  vim.cmd([[
+    tabnext
+  ]]) 
+end,
+{ desc = 'Go to previous tab'}
+)
+
+vim.api.nvim_create_user_command('RefreshDisplay', function()
+  -- Get the current $DISPLAY from the tmux environment or SSH_CONNECTION
+  local handle = io.popen("tmux show-environment | grep DISPLAY | sed 's/^DISPLAY=//'")
+  local display = handle:read("*a"):gsub("%s+$", "")
+  handle:close()
+  
+  -- If not found in tmux, try alternative methods
+  if display == "" then
+    -- Try to get from the parent shell
+    handle = io.popen("bash -c 'echo $DISPLAY'")
+    display = handle:read("*a"):gsub("%s+$", "")
+    handle:close()
+  end
+  
+  -- Update Neovim's environment variable if we found a value
+  if display ~= "" then
+    vim.env.DISPLAY = display
+    print("DISPLAY updated to: " .. display)
+  else
+    print("Could not determine DISPLAY value")
+  end
+end, {})
+
+vim.opt.statusline="%f"
+
+-- Add this to your config
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = "yes"  -- This adds the left column space
+  end
+})

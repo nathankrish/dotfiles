@@ -100,13 +100,32 @@ return {
         end,
       },
       {
-        name = 'Launch Unit Test',
+        name = 'Launch Unit Tests',
+        type = 'cppdbg',
+        request = 'launch',
+        program = function()
+          return vim.fn.getcwd() .. '/build/unit_test_runner'
+        end,
+        args = function()
+          return {'--cem-unit-test-dir', vim.fn.getcwd() .. '/data/unit_test'}
+        end,
+        cwd = '${workspaceFolder}',
+        stopAtEntry = true,
+      },
+
+
+      {
+        name = 'Launch Unit Test (with Filter)',
         type = 'cppdbg',
         request = 'launch',
         program = function()
           return vim.fn.getcwd() .. '/build/unit_test_runner'
         end,
         cwd = '${workspaceFolder}',
+        args = function()
+          local filter = vim.fn.input 'CTest Filter: '
+          return {'--cem-unit-test-dir', vim.fn.getcwd() .. '/data/unit_test', '--gtest_filter=' .. filter .. '*'}
+        end,
         stopAtEntry = true,
       },
     }

@@ -21,36 +21,6 @@ return {
     'nvim-tree/nvim-web-devicons',
   },
   {
-    'kdheepak/lazygit.nvim',
-    lazy = true,
-    cmd = {
-      'LazyGit',
-      'LazyGitConfig',
-      'LazyGitCurrentFile',
-      'LazyGitFilter',
-      'LazyGitFilterCurrentFile',
-    },
-    -- optional for floating window border decoration
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    -- setting the keybinding for LazyGit with 'keys' is recommended in
-    -- order to load the plugin when the command is run for the first time
-    keys = {
-      { '<leader>gv', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
-    },
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    lazy = true,
-    version = '*',
-    config = true,
-    shade_terminals = false,
-    keys = {
-      { '<leader>h', '<cmd>ToggleTerm direction=horizontal<cr>', desc = 'Toggle the [h]orizontal terminal' },
-    },
-  },
-  {
     'folke/flash.nvim',
     event = 'VeryLazy',
     lazy = true,
@@ -69,55 +39,92 @@ return {
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
   },
-  {
-    'NeogitOrg/neogit',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- required
-      'sindrets/diffview.nvim', -- optional - Diff integration
-
-      -- Only one of these is needed.
-      'nvim-telescope/telescope.nvim', -- optional
-    },
-    config = true,
-    keys = {
-      { '<leader>gn', '<cmd>Neogit<cr>', desc = 'Neogit' },
-    },
-  },
-  {
-    'mfussenegger/nvim-jdtls',
-  },
   -- {
-  --   'iamcco/markdown-preview.nvim',
-  --   cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-  --   ft = { 'markdown' },
-  --   build = function()
-  --     vim.fn['mkdp#util#install']()
-  --   end,
-  -- },
-  {
-    'iamcco/markdown-preview.nvim',
-    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-    build = 'cd app && yarn install',
-    init = function()
-      vim.g.mkdp_filetypes = { 'markdown' }
-    end,
-    ft = { 'markdown' },
-  },
-
-  -- {
-  --   'iamcco/markdown-preview.nvim',
-  --   cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-  --   build = 'cd app && yarn install',
-  --   init = function()
-  --     vim.g.mkdp_filetypes = { 'markdown' }
-  --   end,
+  --   'NeogitOrg/neogit',
+  --   lazy = true,
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim', -- required
+  --     'sindrets/diffview.nvim', -- optional - Diff integration
+  --
+  --     -- Only one of these is needed.
+  --     'nvim-telescope/telescope.nvim', -- optional
+  --   },
+  --   config = true,
   --   keys = {
-  --     {
-  --       '<leader>md',
-  --       ft = 'markdown',
-  --       '<cmd>MarkdownPreviewToggle<cr>',
-  --       desc = 'Markdown Preview',
-  --     },
+  --     { '<leader>ng', '<cmd>Neogit<cr>', desc = 'Neogit' },
+  --   },
+  --   integrations = {
+  --     diffviw = true,
   --   },
   -- },
+  {
+    "folke/trouble.nvim",
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = "Trouble",
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
+    },
+  },
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is.
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'EdenEast/nightfox.nvim',
+    -- 'ellisonleao/gruvbox.nvim',
+    -- 'rebelot/kanagawa.nvim',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+      -- Load the colorscheme here.
+      vim.cmd.colorscheme 'duskfox'
+      -- vim.cmd.colorscheme 'gruvbox'
+      -- vim.cmd.colorscheme 'kanagawa'
+
+      -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = 'auto',
+          disabled_filetypes = {
+            statusline = { 'NvimTree' },
+            winbar = { 'NvimTree' },
+          }
+        }
+      }
+    end
+  },
 }
