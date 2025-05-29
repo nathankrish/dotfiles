@@ -901,3 +901,72 @@ vim.keymap.set('v', '<leader>/', 'gc', { desc = 'toggle comment', remap = true }
 --
 vim.opt.diffopt = 'vertical'
 vim.o.shell = '/opt/homebrew/bin/bash'
+vim.keymap.set('n', '<leader>nt', function()
+  vim.cmd [[
+    tabnew
+  ]]
+  vim.cmd [[
+    term 
+  ]]
+  vim.cmd [[
+    set nonu
+  ]]
+end, { desc = 'Create a terminal window' })
+
+vim.keymap.set('n', '<leader>nw', function()
+  vim.cmd [[
+    tabclose
+  ]]
+end, { desc = 'Close the current tab' })
+
+vim.keymap.set('n', '<leader>no', function()
+  vim.cmd [[
+    tabnew
+  ]]
+end, { desc = 'Create a new tab' })
+
+vim.keymap.set('n', 'gj', function()
+  vim.cmd [[
+    tabprevious
+  ]]
+end, { desc = 'Go to next tab' })
+
+vim.keymap.set('n', 'gk', function()
+  vim.cmd [[
+    tabnext
+  ]]
+end, { desc = 'Go to previous tab' })
+
+vim.api.nvim_create_user_command('RefreshDisplay', function()
+  -- Get the current $DISPLAY from the tmux environment or SSH_CONNECTION
+  local handle = io.popen "tmux show-environment | grep DISPLAY | sed 's/^DISPLAY=//'"
+  local display = handle:read('*a'):gsub('%s+$', '')
+  handle:close()
+
+  -- If not found in tmux, try alternative methods
+  if display == '' then
+    -- Try to get from the parent shell
+    handle = io.popen "bash -c 'echo $DISPLAY'"
+    display = handle:read('*a'):gsub('%s+$', '')
+    handle:close()
+  end
+
+  -- Update Neovim's environment variable if we found a value
+  if display ~= '' then
+    vim.env.DISPLAY = display
+    print('DISPLAY updated to: ' .. display)
+  else
+    print 'Could not determine DISPLAY value'
+  end
+end, {})
+
+vim.opt.statusline = '%f'
+
+-- Add this to your config
+vim.api.nvim_create_autocmd('TermOpen', {
+  callback = function()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = 'yes' -- This adds the left column space
+  end,
+})
