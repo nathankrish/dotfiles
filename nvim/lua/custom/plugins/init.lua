@@ -69,31 +69,23 @@ return {
       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
     },
   },
-  {
-    'NeogitOrg/neogit',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- required
-      'sindrets/diffview.nvim', -- optional - Diff integration
-
-      -- Only one of these is needed.
-      'nvim-telescope/telescope.nvim', -- optional
-    },
-    config = true,
-    keys = {
-      { '<leader>gn', '<cmd>Neogit<cr>', desc = 'Neogit' },
-    },
-  },
+  -- {
+  --   'NeogitOrg/neogit',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim', -- required
+  --     'sindrets/diffview.nvim', -- optional - Diff integration
+  --
+  --     -- Only one of these is needed.
+  --     'nvim-telescope/telescope.nvim', -- optional
+  --   },
+  --   config = true,
+  --   keys = {
+  --     { '<leader>gn', '<cmd>Neogit<cr>', desc = 'Neogit' },
+  --   },
+  -- },
   {
     'mfussenegger/nvim-jdtls',
   },
-  -- {
-  --   'iamcco/markdown-preview.nvim',
-  --   cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-  --   ft = { 'markdown' },
-  --   build = function()
-  --     vim.fn['mkdp#util#install']()
-  --   end,
-  -- },
   {
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
@@ -103,21 +95,5 @@ return {
     end,
     ft = { 'markdown' },
   },
-
-  -- {
-  --   'iamcco/markdown-preview.nvim',
-  --   cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-  --   build = 'cd app && yarn install',
-  --   init = function()
-  --     vim.g.mkdp_filetypes = { 'markdown' }
-  --   end,
-  --   keys = {
-  --     {
-  --       '<leader>md',
-  --       ft = 'markdown',
-  --       '<cmd>MarkdownPreviewToggle<cr>',
-  --       desc = 'Markdown Preview',
-  --     },
-  --   },
-  -- },
+  'sindrets/diffview.nvim',
 }

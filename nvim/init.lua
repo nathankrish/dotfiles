@@ -913,6 +913,12 @@ vim.keymap.set('n', '<leader>nt', function()
   ]]
 end, { desc = 'Create a terminal window' })
 
+vim.keymap.set('n', '<leader>nd', function()
+  vim.cmd [[
+    DiffviewOpen
+  ]]
+end, { desc = 'Open a diffview tab' })
+
 vim.keymap.set('n', '<leader>nw', function()
   vim.cmd [[
     tabclose
