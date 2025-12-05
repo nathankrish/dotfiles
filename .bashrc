@@ -75,3 +75,4 @@ export NVM_DIR="$HOME/.nvm"
 # export NO_PROXY="localhost|*.theice.com|*.intcx.net|*.cpex.com"
 # export no_proxy="localhost|*.theice.com|*.intcx.net|*.cpex.com"
 # export NODE_EXTRA_CA_CERTS='/home/knathan1/certs/nscacert.pem'
+export PATH="$(brew --prefix)/opt/python@3/libexec/bin:$PATH"

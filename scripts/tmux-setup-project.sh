@@ -19,7 +19,7 @@ then
 
     # Name first Pane and start zsh
     tmux rename-window -t 0 'nvim'
-    tmux send-keys -t 'nvim' "cd ~/Documents/$proj; nvim" C-m " nt" C-m " nt" C-m " gt" C-m
+    tmux send-keys -t 'nvim' "cd ~/Documents/$proj; nvim" C-m " nt" C-m " nd" C-m " gt" C-m
 
     tmux new-window -t $SESSION:1 -n 'aft'
     tmux send-keys -t 'aft' "cd ~/Documents/$proj" C-m
