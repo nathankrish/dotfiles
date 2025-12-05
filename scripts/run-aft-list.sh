@@ -2,6 +2,7 @@
 
 # Specify the input file
 input_file=$1
+threads=$2
 
 # Check if the file exists
 if [ ! -f "$input_file" ]; then
@@ -24,4 +25,4 @@ while IFS= read -r line; do
 
 done < "$input_file"
 
-ruby ./functest/bin/test_main.rb --bindir=./build --testdatadir=./functest/data --cemroot=. --filter="$filter"
+ruby ./functest/bin/test_main.rb --bindir=./build --testdatadir=./functest/data --cemroot=. --filter="$filter" --threads=$threads

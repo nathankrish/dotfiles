@@ -75,6 +75,15 @@ return {
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      '<leader>dl',
+      function()
+        local msg = vim.fn.input("Log message: ")
+        require('dap').set_breakpoint(nil, nil, msg)
+      end,
+      desc = 'Debug: Set Logpoint'
+    }
+
   },
   config = function()
     local dap = require 'dap'

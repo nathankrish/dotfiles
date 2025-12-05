@@ -14,15 +14,15 @@ SESSIONEXISTS=$(tmux list-sessions | grep $SESSION)
 if [ "$SESSIONEXISTS" = "" ]
 then
     proj=$1
+    cd ~/projects/$proj;
     # Start New Session with our name
     tmux new-session -d -s $SESSION
 
     # Name first Pane and start zsh
     tmux rename-window -t 0 'nvim'
-    tmux send-keys -t 'nvim' "cd ~/projects/$proj; nvim" C-m " nt" C-m " nt" C-m " gt" C-m
+    tmux send-keys -t 'nvim' "nvim" C-m " nt" C-m " nd" C-m " gt" C-m
 
     tmux new-window -t $SESSION:1 -n 'aft'
-    tmux send-keys -t 'aft' "cd ~/projects/$proj" C-m
 fi
 
 # Attach Session, on the Main window

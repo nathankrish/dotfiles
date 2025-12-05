@@ -304,12 +304,22 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          colorscheme = {
+            enable_preview = true
+          }
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
-        },
+           fzf = {
+              fuzzy = true,                    -- false will only do exact matching
+              override_generic_sorter = true,  -- override the generic sorter
+              override_file_sorter = true,     -- override the file sorter
+              case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+            }
+          },
       }
 
       -- Enable Telescope extensions if they are installed
@@ -319,6 +329,7 @@ require('lazy').setup({
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sc', builtin.colorscheme, { desc = '[S]earch [C]olorschemes' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sif', '<cmd>Telescope find_files no_ignore=true follow=true<cr>', { desc = '[S]earch [I]gnored [F]iles' })
       vim.keymap.set('n', '<leader>sig', '<cmd>Telescope live_grep no_ignore=true follow=true<cr>', { desc = '[S]earch [I]gnored [G]rep' })
@@ -927,6 +938,14 @@ end,
 { desc = 'Create a new tab'}
 )
 
+vim.keymap.set('n', '<leader>nd', function()
+  vim.cmd([[
+    DiffviewOpen
+  ]]) 
+end,
+{ desc = 'Open a new diffview'}
+)
+
 vim.keymap.set('n', 'gj', function()
   vim.cmd([[
     tabprevious
@@ -976,3 +995,23 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.signcolumn = "yes"  -- This adds the left column space
   end
 })
+
+vim.opt.makeprg = "bash ./devtools/scripts/dev_build.sh"
+
+-- vim.cmd([[
+--   highlight TrailingWhitespace ctermbg=red guibg=red
+--   match TrailingWhitespace /\s\+$/
+-- ]])
+--
+
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   pattern = "*",
+--   callback = function()
+--     -- Save cursor position
+--     local save_cursor = vim.fn.getpos(".")
+--     -- Remove trailing whitespace
+--     vim.cmd([[%s/\s\+$//e]])
+--     -- Restore cursor position
+--     vim.fn.setpos(".", save_cursor)
+--   end,
+-- })

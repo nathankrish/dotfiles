@@ -1,10 +1,18 @@
 #!/bin/bash
 
+report="---------- AFT Report ----------\n"
+function print_report {
+	echo -e $report
+	echo -e $report >> aft_report.txt
+}
+trap print_report EXIT
 rm -f aft_report.txt
 # Specify the input file
 if [ $# -eq 0 ]
 	then
 		input_file="functest/data/testcase/failed.testcase.txt"
+		rm -f failed_afts.txt 
+		cp $input_file failed_afts.txt
 	else
 		input_file=$1
 fi
@@ -16,7 +24,6 @@ if [ ! -f "$input_file" ]; then
 fi
 
 failing_afts=$(< $input_file)
-report="********** AFT Report **********\n"
 while IFS= read -r line; do
 	# use -a to add one to the number of runs (if already run AFTs once)
 	if [[ $* == *-a* ]]
@@ -36,9 +43,8 @@ while IFS= read -r line; do
 	    exit_code=$?
 	done
 
-	report+="[$num_runs runs] $line\n"
+	report+="[  $num_runs runs    ] $line\n"
 
 done <<< "$failing_afts"
 
-echo -e $report
-echo -e $report >> aft_report.txt
+print_report()
